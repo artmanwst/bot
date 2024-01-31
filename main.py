@@ -8,12 +8,12 @@ from aiogram.filters import Command, StateFilter
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 from aiogram import F
-
+import os
 import asyncio
 import sqlite3
 
 
-bot = Bot(token='')
+bot = Bot(token='6662652848:AAG_sTyrZTx-vz2lC9bIhs5TvTZd1Ora9hY')
 db = Dispatcher()
 
 
@@ -39,7 +39,8 @@ async def keyboard(message: types.Message):
 
 @db.message(F.text == 'Зарегистрироваться')
 async def check_user(message: types.Message, state: FSMContext):
-    conn = sqlite3.connect('db.sqlite3')
+    database_path = os.path.join('webapp', 'db.sqlite3')
+    conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
     user_id = message.from_user.id
     id = cursor.execute('''SELECT *  from counter_user WHERE id =?''',
@@ -51,6 +52,7 @@ async def check_user(message: types.Message, state: FSMContext):
         await state.set_state(Registration.name)
     else:
         text = 'Вы уже зарегистрированы'
+        print('a')
         await message.answer(text)
 
 
@@ -70,7 +72,8 @@ async def age_user(message: types.Message, state: FSMContext):
         age = int(message.text)
         await state.update_data(age=age)
         data = await state.get_data()
-        conn = sqlite3.connect('db.sqlite3')
+        database_path = os.path.join('webapp', 'db.sqlite3')
+        conn = sqlite3.connect(database_path)
         cursor = conn.cursor()
         id = message.from_user.id
         name = data['name']
@@ -79,6 +82,7 @@ async def age_user(message: types.Message, state: FSMContext):
                          VALUES(?,?,?)''', (id, name, age))
         conn.commit()
         conn.close()
+        await message.answer("Спасибо, вы зарегистрированы!")
     except ValueError:
         await message.answer("Неверный формат. Введите возраст цифрами.")
         return
