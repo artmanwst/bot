@@ -13,7 +13,7 @@ import asyncio
 import sqlite3
 
 
-bot = Bot(token='6662652848:AAG_sTyrZTx-vz2lC9bIhs5TvTZd1Ora9hY')
+bot = Bot(token='')
 db = Dispatcher()
 
 
